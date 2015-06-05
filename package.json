@@ -1,15 +1,19 @@
 {
-  "private": true,
-  "name": "",
+  "name": "json-rpc-peer",
   "version": "0.0.0",
   "license": "ISC",
-  "description": "",
-  "keywords": [],
-  "homepage": "",
-  "bugs": "",
+  "description": "JSON RPC 2 transport-agnostic library",
+  "keywords": [
+    "json",
+    "json-rpc",
+    "jsonrpc",
+    "rpc"
+  ],
+  "homepage": "https://github.com/julien-f/js-json-rpc-peer",
+  "bugs": "https://github.com/julien-f/js-json-rpc-peer/issues",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/julien-f/js-json-rpc-peer.git"
   },
   "author": {
     "name": "Julien Fontanet",
