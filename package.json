@@ -7,6 +7,7 @@
     "json",
     "json-rpc",
     "jsonrpc",
+    "jsonrpc2",
     "rpc"
   ],
   "homepage": "https://github.com/julien-f/js-json-rpc-peer",
