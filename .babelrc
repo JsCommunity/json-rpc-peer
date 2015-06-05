@@ -5,8 +5,8 @@
     "es7.asyncFunctions",
     "es7.decorators",
     "es7.functionBind",
+    "minification.constantFolding",
     "minification.deadCodeElimination",
-    "minification.inlineExpressions",
     "runtime"
   ]
 }

@@ -34,7 +34,7 @@
     "readable-stream": "^1.0.33"
   },
   "devDependencies": {
-    "babel": "^5.4.7",
+    "babel": "^5.5.1",
     "babel-eslint": "^3.1.11",
     "mocha": "^2.2.5",
     "must": "^0.12.0",
