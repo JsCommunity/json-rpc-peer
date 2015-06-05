@@ -17,16 +17,16 @@ be flexible enough to use in any environments.
 
 ```javascript
 // ES5
-var createPeer = require('@julien/json-rpc').createPeer
+var Peer = require('@julien/json-rpc')
 
 // ES6
-import {createPeer} from '@julien/json-rpc'
+import Peer from '@julien/json-rpc'
 ```
 
 ### Construction
 
 ```javascript
-var peer = createPeer(function onMessage (message) {
+var peer = new Peer(function onMessage (message) {
   // Here is the main handler where every incoming
   // notification/request message goes.
   //
@@ -86,7 +86,7 @@ require('websocket-stream').createServer({
 }, function onConnection (stream) {
   // Because a stream can only be used once, it is necessary to create
   // a dedicated peer per connection.
-  stream.pipe(createPeer(onMessage)).pipe(stream)
+  stream.pipe(new Peer(onMessage)).pipe(stream)
 })
 ```
 
