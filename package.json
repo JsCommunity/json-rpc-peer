@@ -30,6 +30,7 @@
     "babel-runtime": "^5.4.7",
     "json-rpc-protocol": "^0.9.0",
     "lodash.foreach": "^3.0.3",
+    "lodash.isarray": "^3.0.3",
     "lodash.map": "^3.1.4",
     "readable-stream": "^1.0.33"
   },
