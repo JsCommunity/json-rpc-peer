@@ -80,11 +80,11 @@ describe('Peer', () => {
   })
 
   it('#request() in parallel', function () {
-    this.timeout(15)
+    this.timeout(30)
 
     return Promise.all([
-      client.request('wait', [10]),
-      client.request('wait', [10])
+      client.request('wait', [20]),
+      client.request('wait', [20])
     ])
   })
 })
