@@ -2,7 +2,7 @@
   "name": "json-rpc-peer",
   "version": "0.0.0",
   "license": "ISC",
-  "description": "JSON RPC 2 transport-agnostic library",
+  "description": "JSON-RPC 2 transport-agnostic library",
   "keywords": [
     "json",
     "json-rpc",

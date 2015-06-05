@@ -1,6 +1,6 @@
 # json-rpc-peer [![Build Status](https://travis-ci.org/julien-f/js-json-rpc-peer.png?branch=master)](https://travis-ci.org/julien-f/js-json-rpc-peer)
 
-> ${pkg.description}
+> JSON-RPC 2 transport-agnostic library
 
 ## Install
 
