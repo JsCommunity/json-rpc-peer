@@ -22,6 +22,13 @@ describe('Peer', () => {
 
       const {method} = message
 
+      if (method === 'circular value') {
+        const a = []
+        a.push(a)
+
+        return a
+      }
+
       if (method === 'identity') {
         return message.params[0]
       }
@@ -85,5 +92,13 @@ describe('Peer', () => {
       client.request('wait', [20]),
       client.request('wait', [20])
     ])
+  })
+
+  describe('#write()', function () {
+    it('emits an error event if the response message cannot be formatted', function (done) {
+      server.on('error', () => done())
+
+      client.request('circular value')
+    })
   })
 })
