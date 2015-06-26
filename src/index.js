@@ -60,7 +60,9 @@ export default class Peer extends Duplex {
   }
 
   _getDeferred (id) {
-    return this._deferreds[id]
+    const deferred = this._deferreds[id]
+    delete this._deferreds[id]
+    return deferred
   }
 
   // Emit buffered outgoing messages.
