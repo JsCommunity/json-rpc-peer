@@ -11,6 +11,17 @@ import {
 
 // ===================================================================
 
+// Exports JSON-RPC errors.
+export {
+  JsonRpcError,
+  InvalidJson,
+  InvalidRequest,
+  MethodNotFound,
+  InvalidParameters
+} from 'json-rpc-protocol'
+
+// ===================================================================
+
 function makeAsync (fn) {
   return async function () {
     return fn.apply(this, arguments)

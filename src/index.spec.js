@@ -4,8 +4,7 @@ import expect from 'must'
 
 // ===================================================================
 
-import Peer from './'
-import {MethodNotFound} from 'json-rpc-protocol'
+import Peer, {MethodNotFound} from './'
 
 // ===================================================================
 
