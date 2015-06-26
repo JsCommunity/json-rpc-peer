@@ -85,7 +85,7 @@ export default class Peer extends Duplex {
     try {
       message = parse(message)
     } catch (error) {
-      return format.error(message.id, error)
+      return format.error(null, error)
     }
 
     if (isArray(message)) {
