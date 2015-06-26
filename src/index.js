@@ -124,7 +124,7 @@ export default class Peer extends Duplex {
     } else if (type === 'notification') {
       this._handle(message).catch(noop)
     } else {
-      return this._handle(message).catch(function (error) {
+      return await this._handle(message).catch(function (error) {
         // If the method name is not defined, default to the method passed
         // in the request.
         if (error instanceof MethodNotFound && !error.data) {
@@ -160,7 +160,7 @@ export default class Peer extends Duplex {
     this.push(format.request(requestId, method, params))
 
     // https://github.com/petkaantonov/bluebird/blob/master/API.md#deferred-migration
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       this._deferreds[requestId] = {resolve, reject}
     })
   }
