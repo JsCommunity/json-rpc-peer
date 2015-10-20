@@ -124,6 +124,34 @@ peer.request('add', [1, 2]).catch(function (reason) {
 peer.failPendingRequests('connection lost');
 ```
 
+### Low level interface
+
+> `json-rpc-peer` also exports everything from [`json-rpc-protocol`](https://www.npmjs.com/package/json-rpc-protocol).
+
+```js
+// ES5
+var peer = require('json-rpc-peer')
+
+var format = peer.format
+var parse = peer.parse
+var JsonRpcError = peer.JsonRpcError
+var InvalidJson = peer.InvalidJson
+var InvalidRequest = peer.InvalidRequest
+var MethodNotFound = peer.MethodNotFound
+var InvalidParameters = peer.InvalidParameters
+
+// ES2015 (formerly known as ES6)
+import {
+  format,
+  parse,
+  JsonRpcError,
+  InvalidJson,
+  InvalidRequest,
+  MethodNotFound,
+  InvalidParameters
+} from 'json-rpc-peer'
+```
+
 ## Development
 
 ### Installing dependencies
