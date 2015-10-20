@@ -11,14 +11,8 @@ import {
 
 // ===================================================================
 
-// Exports JSON-RPC errors.
-export {
-  JsonRpcError,
-  InvalidJson,
-  InvalidRequest,
-  MethodNotFound,
-  InvalidParameters
-} from 'json-rpc-protocol'
+// Give access to low level interface.
+export * from 'json-rpc-protocol'
 
 // ===================================================================
 
