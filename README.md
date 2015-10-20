@@ -17,10 +17,10 @@ be flexible enough to use in any environments.
 
 ```javascript
 // ES5
-var Peer = require('@julien/json-rpc')
+var Peer = require('json-rpc-peer')
 
 // ES6
-import Peer from '@julien/json-rpc'
+import Peer from 'json-rpc-peer'
 ```
 
 ### Construction
