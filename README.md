@@ -17,7 +17,7 @@ be flexible enough to use in any environments.
 
 ```javascript
 // ES5
-var Peer = require('json-rpc-peer')
+var Peer = require('json-rpc-peer')['default']
 
 // ES6
 import Peer from 'json-rpc-peer'
