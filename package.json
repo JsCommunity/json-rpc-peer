@@ -32,7 +32,7 @@
     "lodash.foreach": "^3.0.3",
     "lodash.isarray": "^3.0.3",
     "lodash.map": "^3.1.4",
-    "readable-stream": "^2.0.2"
+    "readable-stream": "^2.1.4"
   },
   "devDependencies": {
     "babel": "^5.5.1",
