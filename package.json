@@ -27,7 +27,7 @@
     "dist/"
   ],
   "dependencies": {
-    "babel-runtime": "^5.4.7",
+    "babel-runtime": "^6.9.2",
     "json-rpc-protocol": "^0.10.0",
     "lodash.foreach": "^3.0.3",
     "lodash.isarray": "^3.0.3",
