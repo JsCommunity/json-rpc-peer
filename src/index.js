@@ -1,7 +1,7 @@
 import Duplex from 'readable-stream/duplex'
-import forEach from 'lodash.foreach'
-import isArray from 'lodash.isarray'
-import map from 'lodash.map'
+import forEach from 'lodash/forEach'
+import isArray from 'lodash/isArray'
+import map from 'lodash/map'
 import {
   format,
   JsonRpcError,
@@ -12,13 +12,26 @@ import {
 // ===================================================================
 
 // Give access to low level interface.
-export * from 'json-rpc-protocol'
+// export * from 'json-rpc-protocol'
+// FIXME: work around for https://fabricator.babeljs.io/T2877
+{
+  const protocol = require('json-rpc-protocol')
+  for (let prop in protocol) {
+    if (prop !== 'default' && Object.prototype.hasOwnProperty.call(protocol, prop)) {
+      Object.defineProperty(module.exports, prop, {
+        configurable: true,
+        enumerable: true,
+        get: () => protocol[prop]
+      })
+    }
+  }
+}
 
 // ===================================================================
 
 function makeAsync (fn) {
-  return async function () {
-    return await fn.apply(this, arguments)
+  return function () {
+    return new Promise(resolve => resolve(fn.apply(this, arguments)))
   }
 }
 
