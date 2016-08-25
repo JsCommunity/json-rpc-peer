@@ -47,7 +47,10 @@ function defaultOnMessage (message) {
 
 function noop () {}
 
-let nextRequestId = 0
+// Starts the autoincrement id with the JavaScript minimal safe integer to have
+// more room before running out of integers (it's very far fetched but a very
+// long running process with a LOT of messages could run out).
+let nextRequestId = -9007199254740991
 
 // ===================================================================
 
