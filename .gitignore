@@ -1,8 +1,6 @@
-/bower_components/
+/.nyc_output/
 /dist/
+/node_modules/
 
 npm-debug.log
 npm-debug.log.*
-
-!node_modules/*
-node_modules/*/
