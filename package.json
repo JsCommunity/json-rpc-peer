@@ -10,11 +10,11 @@
     "jsonrpc2",
     "rpc"
   ],
-  "homepage": "https://github.com/julien-f/js-json-rpc-peer",
-  "bugs": "https://github.com/julien-f/js-json-rpc-peer/issues",
+  "homepage": "https://github.com/JsCommunity/json-rpc-peer",
+  "bugs": "https://github.com/JsCommunity/json-rpc-peer/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/julien-f/js-json-rpc-peer.git"
+    "url": "https://github.com/JsCommunity/json-rpc-peer.git"
   },
   "author": {
     "name": "Julien Fontanet",

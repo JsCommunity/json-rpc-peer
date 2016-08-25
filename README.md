@@ -1,4 +1,4 @@
-# json-rpc-peer [![Build Status](https://travis-ci.org/julien-f/js-json-rpc-peer.png?branch=master)](https://travis-ci.org/julien-f/js-json-rpc-peer)
+# json-rpc-peer [![Build Status](https://travis-ci.org/JsCommunity/json-rpc-peer.png?branch=master)](https://travis-ci.org/JsCommunity/json-rpc-peer)
 
 > JSON-RPC 2 transport-agnostic library
 
@@ -181,7 +181,7 @@ the code.
 
 You may:
 
-- report any [issue](https://github.com/julien-f/js-json-rpc-peer/issues)
+- report any [issue](https://github.com/JsCommunity/json-rpc-peer/issues)
   you've encountered;
 - fork and create a pull request.
 
