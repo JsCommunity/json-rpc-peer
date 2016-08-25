@@ -35,6 +35,14 @@ function makeAsync (fn) {
   }
 }
 
+const parseMessage = message => {
+  try {
+    return parse(message)
+  } catch (error) {
+    throw format.error(null, error)
+  }
+}
+
 // Default onMessage implementation:
 //
 // - ignores notifications
@@ -95,11 +103,7 @@ export default class Peer extends Duplex {
   }
 
   async exec (message) {
-    try {
-      message = parse(message)
-    } catch (error) {
-      return format.error(null, error)
-    }
+    message = parseMessage(message)
 
     if (isArray(message)) {
       const results = []
