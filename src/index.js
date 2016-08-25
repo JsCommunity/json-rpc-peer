@@ -161,13 +161,12 @@ export default class Peer extends Duplex {
    *
    * TODO: handle multi-requests.
    */
-  async request (method, params) {
-    const requestId = nextRequestId++
+  request (method, params) {
+    return new Promise((resolve, reject) => {
+      const requestId = nextRequestId++
 
-    this.push(format.request(requestId, method, params))
+      this.push(format.request(requestId, method, params))
 
-    // https://github.com/petkaantonov/bluebird/blob/master/API.md#deferred-migration
-    return await new Promise((resolve, reject) => {
       this._deferreds[requestId] = {resolve, reject}
     })
   }
