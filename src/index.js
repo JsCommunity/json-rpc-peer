@@ -131,7 +131,7 @@ export default class Peer extends Duplex {
     } else if (type === 'notification') {
       this._handle(message).catch(noop)
     } else {
-      return await this._handle(message).catch(function (error) {
+      return this._handle(message).catch(function (error) {
         // If the method name is not defined, default to the method passed
         // in the request.
         if (error instanceof MethodNotFound && !error.data) {
