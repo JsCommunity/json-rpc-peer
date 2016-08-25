@@ -80,13 +80,16 @@ export default class Peer extends Duplex {
 
   // Receive and execute incoming messages.
   _write (message, _, next) {
-    this.exec(String(message)).then(response => {
-      if (response !== undefined) {
-        this.push(response)
+    this.exec(String(message)).then(
+      response => {
+        if (response !== undefined) {
+          this.push(response)
+        }
+      },
+      error => {
+        this.emit('error', error)
       }
-    }).catch(error => {
-      this.emit('error', error)
-    })
+    )
 
     next()
   }
