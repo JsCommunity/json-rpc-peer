@@ -49,7 +49,7 @@ const parseMessage = message => {
 // - throw MethodNotFound for all requests
 function defaultOnMessage (message) {
   if (message.type === 'request') {
-    throw new MethodNotFound()
+    throw new MethodNotFound(message.method)
   }
 }
 
