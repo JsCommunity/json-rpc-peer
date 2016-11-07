@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.11.6",
-    "json-rpc-protocol": "^0.11.0",
+    "json-rpc-protocol": "0.11.0",
     "lodash": "^4.15.0",
     "readable-stream": "^2.1.5"
   },
