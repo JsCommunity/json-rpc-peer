@@ -1,7 +1,9 @@
 import Duplex from 'readable-stream/duplex'
-import forEach from 'lodash/forEach'
-import isArray from 'lodash/isArray'
-import map from 'lodash/map'
+import {
+  forEach,
+  isArray,
+  map
+} from 'lodash'
 import {
   format,
   JsonRpcError,

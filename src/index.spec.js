@@ -1,8 +1,4 @@
-/* eslint-env mocha */
-
-import expect from 'must'
-
-// ===================================================================
+/* eslint-env jest */
 
 import Peer, {MethodNotFound} from './'
 
@@ -12,7 +8,7 @@ describe('Peer', () => {
   let server, client
   const messages = []
 
-  before(() => {
+  beforeAll(() => {
     server = new Peer(message => {
       messages.push(message)
 
@@ -55,43 +51,49 @@ describe('Peer', () => {
 
   it('#notify()', () => {
     client.notify('foo')
-
-    expect(messages.length).to.equal(1)
-    expect(messages[0].method).to.equal('foo')
-    expect(messages[0].type).to.equal('notification')
+    return new Promise(resolve =>
+      // artificial delay to way the message to reach the "server"
+      setTimeout(resolve, 10)
+    ).then(() => {
+      expect(messages.length).toBe(1)
+      expect(messages[0].method).toBe('foo')
+      expect(messages[0].type).toBe('notification')
+    })
   })
 
   it('#request()', () => {
     const result = client.request('identity', [42])
 
-    expect(messages.length).to.equal(1)
-    expect(messages[0].method).to.equal('identity')
-    expect(messages[0].type).to.equal('request')
+    expect(messages.length).toBe(1)
+    expect(messages[0].method).toBe('identity')
+    expect(messages[0].type).toBe('request')
 
     return result.then(result => {
-      expect(result).to.equal(42)
+      expect(result).toBe(42)
     })
   })
 
   it('#request() injects method name when MethodNotFound', () => {
     return client.request('foo').then(
       () => {
-        expect('should have been rejected').to.be.falsy()
+        expect('should have been rejected').toBeFalsy()
       },
       error => {
-        expect(error.code).to.equal(-32601)
-        expect(error.data).to.equal('foo')
+        expect(error.code).toBe(-32601)
+        expect(error.data).toBe('foo')
       }
     )
   })
 
   it('#request() in parallel', function () {
-    this.timeout(40)
+    const start = Date.now()
 
     return Promise.all([
       client.request('wait', [25]),
       client.request('wait', [25])
-    ])
+    ]).then(() => {
+      expect(Date.now() - start).toBeLessThan(40)
+    })
   })
 
   describe('#write()', function () {
