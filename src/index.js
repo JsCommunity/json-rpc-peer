@@ -1,4 +1,4 @@
-import Duplex from 'readable-stream/duplex'
+import { EventEmitter } from 'events'
 import {
   forEach,
   isArray,
@@ -64,44 +64,18 @@ let nextRequestId = -9007199254740991
 
 // ===================================================================
 
-export default class Peer extends Duplex {
+export default class Peer extends EventEmitter {
   constructor (onMessage) {
-    super({
-      objectMode: true
-    })
+    super()
 
     this._handle = makeAsync(onMessage || defaultOnMessage)
     this._deferreds = Object.create(null)
-
-    // Forward the end of the stream.
-    this.on('finish', function () {
-      this.push(null)
-    })
   }
 
   _getDeferred (id) {
     const deferred = this._deferreds[id]
     delete this._deferreds[id]
     return deferred
-  }
-
-  // Emit buffered outgoing messages.
-  _read () {}
-
-  // Receive and execute incoming messages.
-  _write (message, _, next) {
-    this.exec(String(message)).then(
-      response => {
-        if (response !== undefined) {
-          this.push(response)
-        }
-      },
-      error => {
-        this.emit('error', error)
-      }
-    )
-
-    next()
   }
 
   async exec (message) {
@@ -190,5 +164,45 @@ export default class Peer extends Duplex {
    */
   async notify (method, params) {
     this.push(format.notification(method, params))
+  }
+
+  // minimal stream interface
+
+  pipe (writable) {
+    const listeners = {
+      data: data => writable.write(data),
+      end: () => {
+        writable.end()
+        clean()
+      }
+    }
+
+    const clean = () => forEach(listeners, (listener, event) => {
+      this.removeListener(event, listener)
+    })
+    forEach(listeners, (listener, event) => {
+      this.on(event, listener)
+    })
+
+    return writable
+  }
+
+  push (data) {
+    return data === null
+      ? this.emit('end')
+      : this.emit('data', data)
+  }
+
+  write (message) {
+    this.exec(String(message)).then(
+      response => {
+        if (response !== undefined) {
+          this.push(response)
+        }
+      },
+      error => {
+        this.emit('error', error)
+      }
+    )
   }
 }

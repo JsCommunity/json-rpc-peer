@@ -51,14 +51,10 @@ describe('Peer', () => {
 
   it('#notify()', () => {
     client.notify('foo')
-    return new Promise(resolve =>
-      // artificial delay to way the message to reach the "server"
-      setTimeout(resolve, 10)
-    ).then(() => {
-      expect(messages.length).toBe(1)
-      expect(messages[0].method).toBe('foo')
-      expect(messages[0].type).toBe('notification')
-    })
+
+    expect(messages.length).toBe(1)
+    expect(messages[0].method).toBe('foo')
+    expect(messages[0].type).toBe('notification')
   })
 
   it('#request()', () => {
