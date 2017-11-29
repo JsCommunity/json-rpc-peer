@@ -86,7 +86,7 @@ describe('Peer', () => {
 
     return Promise.all([
       client.request('wait', [25]),
-      client.request('wait', [25])
+      client.request('wait', [25]),
     ]).then(() => {
       expect(Date.now() - start).toBeLessThan(40)
     })

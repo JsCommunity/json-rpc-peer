@@ -2,13 +2,13 @@ import { EventEmitter } from 'events'
 import {
   forEach,
   isArray,
-  map
+  map,
 } from 'lodash'
 import {
   format,
   JsonRpcError,
   MethodNotFound,
-  parse
+  parse,
 } from 'json-rpc-protocol'
 
 // ===================================================================
@@ -18,12 +18,12 @@ import {
 // FIXME: work around for https://fabricator.babeljs.io/T2877
 {
   const protocol = require('json-rpc-protocol')
-  for (let prop in protocol) {
+  for (const prop in protocol) {
     if (prop !== 'default' && Object.prototype.hasOwnProperty.call(protocol, prop)) {
       Object.defineProperty(module.exports, prop, {
         configurable: true,
         enumerable: true,
-        get: () => protocol[prop]
+        get: () => protocol[prop],
       })
     }
   }
@@ -174,7 +174,7 @@ export default class Peer extends EventEmitter {
       end: () => {
         writable.end()
         clean()
-      }
+      },
     }
 
     const clean = () => forEach(listeners, (listener, event) => {
