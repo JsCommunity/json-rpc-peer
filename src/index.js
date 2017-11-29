@@ -49,7 +49,7 @@ const parseMessage = message => {
 //
 // - ignores notifications
 // - throw MethodNotFound for all requests
-function defaultOnMessage (message) {
+function defaultOnMessage (message, ctx) {
   if (message.type === 'request') {
     throw new MethodNotFound(message.method)
   }
@@ -78,7 +78,7 @@ export default class Peer extends EventEmitter {
     return deferred
   }
 
-  async exec (message) {
+  async exec (message, ctx) {
     message = parseMessage(message)
 
     if (isArray(message)) {
@@ -86,7 +86,7 @@ export default class Peer extends EventEmitter {
 
       // Only returns non empty results.
       await Promise.all(map(message, message => {
-        return this.exec(message).then(result => {
+        return this.exec(message, ctx).then(result => {
           if (result) {
             results.push(result)
           }
@@ -115,9 +115,9 @@ export default class Peer extends EventEmitter {
     } else if (type === 'response') {
       this._getDeferred(message.id).resolve(message.result)
     } else if (type === 'notification') {
-      this._handle(message).catch(noop)
+      this._handle(message, ctx).catch(noop)
     } else {
-      return this._handle(message).then(
+      return this._handle(message, opts).then(
         (result) => format.response(message.id, result === undefined ? null : result),
         (error) => format.error(
           message.id,
