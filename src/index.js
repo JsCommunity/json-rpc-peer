@@ -117,7 +117,7 @@ export default class Peer extends EventEmitter {
     } else if (type === 'notification') {
       this._handle(message, ctx).catch(noop)
     } else {
-      return this._handle(message, opts).then(
+      return this._handle(message, ctx).then(
         (result) => format.response(message.id, result === undefined ? null : result),
         (error) => format.error(
           message.id,
