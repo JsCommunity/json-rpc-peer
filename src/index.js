@@ -78,7 +78,7 @@ export default class Peer extends EventEmitter {
     return deferred
   }
 
-  async exec (message) {
+  async exec (message, ctx) {
     message = parseMessage(message)
 
     if (isArray(message)) {
@@ -86,9 +86,9 @@ export default class Peer extends EventEmitter {
 
       // Only returns non empty results.
       await Promise.all(map(message, message => {
-        return this.exec(message).then(result => {
+        return this.exec(message, ctx).then(result => {
           if (result) {
-            results.push(result)
+            results.push(result, ctx)
           }
         })
       }))
@@ -113,11 +113,11 @@ export default class Peer extends EventEmitter {
         new JsonRpcError(error.message, error.code, error.data)
       )
     } else if (type === 'response') {
-      this._getDeferred(message.id).resolve(message.result)
+      this._getDeferred(message.id).resolve(message.result, ctx)
     } else if (type === 'notification') {
-      this._handle(message).catch(noop)
+      this._handle(message, ctx).catch(noop)
     } else {
-      return this._handle(message).then(
+      return this._handle(message, ctx).then(
         (result) => format.response(message.id, result === undefined ? null : result),
         (error) => format.error(
           message.id,
@@ -147,13 +147,13 @@ export default class Peer extends EventEmitter {
    *
    * TODO: handle multi-requests.
    */
-  request (method, params) {
+  request (method, params, ctx) {
     return new Promise((resolve, reject) => {
       const requestId = nextRequestId++
 
-      this.push(format.request(requestId, method, params))
+      this.push(format.request(requestId, method, params), ctx)
 
-      this._deferreds[requestId] = {resolve, reject}
+      this._deferreds[requestId] = {resolve, reject, ctx}
     })
   }
 
@@ -162,8 +162,8 @@ export default class Peer extends EventEmitter {
    *
    * TODO: handle multi-notifications.
    */
-  async notify (method, params) {
-    this.push(format.notification(method, params))
+  async notify (method, params, ctx) {
+    this.push(format.notification(method, params), ctx)
   }
 
   // minimal stream interface
@@ -187,10 +187,10 @@ export default class Peer extends EventEmitter {
     return writable
   }
 
-  push (data) {
+  push (data, ctx) {
     return data === null
-      ? this.emit('end')
-      : this.emit('data', data)
+      ? this.emit('end', ctx)
+      : this.emit('data', data, ctx)
   }
 
   write (message) {
