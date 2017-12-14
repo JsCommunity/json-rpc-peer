@@ -65,10 +65,10 @@ let nextRequestId = -9007199254740991
 // ===================================================================
 
 export default class Peer extends EventEmitter {
-  constructor (onMessage) {
+  constructor (onMessage = defaultOnMessage) {
     super()
 
-    this._handle = makeAsync(onMessage || defaultOnMessage)
+    this._handle = makeAsync(onMessage)
     this._deferreds = Object.create(null)
   }
 
