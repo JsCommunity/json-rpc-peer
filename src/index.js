@@ -87,7 +87,7 @@ export default class Peer extends EventEmitter {
       // Only returns non empty results.
       await Promise.all(map(message, message => {
         return this.exec(message).then(result => {
-          if (result) {
+          if (result !== undefined) {
             results.push(result)
           }
         })
