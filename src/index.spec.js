@@ -1,5 +1,7 @@
 /* eslint-env jest */
 
+import { format } from 'json-rpc-protocol'
+
 import Peer, {MethodNotFound} from './'
 
 // ===================================================================
@@ -97,6 +99,16 @@ describe('Peer', () => {
       server.on('error', () => done())
 
       client.request('circular value')
+    })
+  })
+
+  describe('#exec()', () => {
+    it('accepts an extra data parameter', () => {
+      const data = {}
+      const onMessage = jest.fn()
+      const peer = new Peer(onMessage)
+      peer.exec(format.notification('foo'), data)
+      expect(onMessage.mock.calls[0][1]).toBe(data)
     })
   })
 })
