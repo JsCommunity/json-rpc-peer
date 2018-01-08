@@ -30,14 +30,14 @@
     "node": ">=4"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0-beta.34",
+    "@babel/polyfill": "7.0.0-beta.36",
     "json-rpc-protocol": "^0.11.3",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.34",
-    "@babel/core": "^7.0.0-beta.34",
-    "@babel/preset-env": "^7.0.0-beta.34",
+    "@babel/cli": "7.0.0-beta.36",
+    "@babel/core": "7.0.0-beta.36",
+    "@babel/preset-env": "7.0.0-beta.36",
     "babel-7-jest": "^21.3.2",
     "babel-eslint": "^8.0.3",
     "babel-plugin-lodash": "^3.3.2",
@@ -49,7 +49,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
-    "jest": "^21.3.0-beta.14",
+    "jest": "^22.0.4",
     "rimraf": "^2.6.2"
   },
   "scripts": {
