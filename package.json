@@ -30,14 +30,14 @@
     "node": ">=4"
   },
   "dependencies": {
-    "@babel/polyfill": "7.0.0-beta.36",
+    "@babel/polyfill": "7.0.0-beta.37",
     "json-rpc-protocol": "^0.11.3",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.36",
-    "@babel/core": "7.0.0-beta.36",
-    "@babel/preset-env": "7.0.0-beta.36",
+    "@babel/cli": "7.0.0-beta.37",
+    "@babel/core": "7.0.0-beta.37",
+    "@babel/preset-env": "7.0.0-beta.37",
     "babel-7-jest": "^21.3.2",
     "babel-eslint": "^8.0.3",
     "babel-plugin-lodash": "^3.3.2",
