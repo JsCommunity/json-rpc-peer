@@ -19,7 +19,10 @@ if (nodeCompat === undefined) {
 module.exports = {
   comments: !__PROD__,
   ignore: __TEST__ ? undefined : [/\.spec\.js$/],
-  plugins: ['lodash'],
+  plugins: [
+    '@babel/transform-runtime',
+    'lodash',
+  ],
   presets: [
     [
       '@babel/env',
