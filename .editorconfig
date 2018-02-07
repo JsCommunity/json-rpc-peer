@@ -24,6 +24,7 @@ indent_style = space
 [*.{md,mdwn,mdown,markdown}]
 indent_size = 4
 indent_style = space
+trim_trailing_whitespace = false
 
 # Package.json
 #
