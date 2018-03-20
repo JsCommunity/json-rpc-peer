@@ -14,20 +14,7 @@ import {
 // ===================================================================
 
 // Give access to low level interface.
-// export * from 'json-rpc-protocol'
-// FIXME: work around for https://fabricator.babeljs.io/T2877
-{
-  const protocol = require('json-rpc-protocol')
-  for (const prop in protocol) {
-    if (prop !== 'default' && Object.prototype.hasOwnProperty.call(protocol, prop)) {
-      Object.defineProperty(module.exports, prop, {
-        configurable: true,
-        enumerable: true,
-        get: () => protocol[prop],
-      })
-    }
-  }
-}
+export * from 'json-rpc-protocol'
 
 // ===================================================================
 
