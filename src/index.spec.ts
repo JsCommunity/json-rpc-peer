@@ -1,14 +1,24 @@
 /* eslint-env jest */
 
-import { format } from 'json-rpc-protocol'
+import {
+  format,
+  JsonRpcPayload,
+  JsonRpcPayloadRequest,
+  JsonRpcParamsSchemaByPositional,
+}                     from 'json-rpc-protocol'
 
-import Peer, {MethodNotFound} from './'
+import {
+  Peer,
+  MethodNotFound,
+}                     from './'
 
 // ===================================================================
 
 describe('Peer', () => {
-  let server, client
-  const messages = []
+  let server: Peer
+  let client: Peer
+
+  const messages: JsonRpcPayload[] = []
 
   beforeAll(() => {
     server = new Peer(message => {
@@ -18,22 +28,25 @@ describe('Peer', () => {
         return
       }
 
-      const {method} = message
+      const {method} = message as JsonRpcPayloadRequest
 
       if (method === 'circular value') {
-        const a = []
+        const a: any[] = []
         a.push(a)
 
         return a
       }
 
+      const requestPayload = message as JsonRpcPayloadRequest
+      const params         = requestPayload.params as JsonRpcParamsSchemaByPositional
+
       if (method === 'identity') {
-        return message.params[0]
+        return params[0]
       }
 
       if (method === 'wait') {
         return new Promise(resolve => {
-          setTimeout(resolve, message.params[0])
+          setTimeout(resolve, params[0])
         })
       }
 
@@ -55,7 +68,7 @@ describe('Peer', () => {
     client.notify('foo')
 
     expect(messages.length).toBe(1)
-    expect(messages[0].method).toBe('foo')
+    expect((messages[0] as JsonRpcPayloadRequest).method).toBe('foo')
     expect(messages[0].type).toBe('notification')
   })
 
@@ -63,11 +76,11 @@ describe('Peer', () => {
     const result = client.request('identity', [42])
 
     expect(messages.length).toBe(1)
-    expect(messages[0].method).toBe('identity')
+    expect((messages[0] as JsonRpcPayloadRequest).method).toBe('identity')
     expect(messages[0].type).toBe('request')
 
-    return result.then(result => {
-      expect(result).toBe(42)
+    return result.then(ret => {
+      expect(ret).toBe(42)
     })
   })
 
@@ -95,7 +108,7 @@ describe('Peer', () => {
   })
 
   describe('#write()', function () {
-    it('emits an error event if the response message cannot be formatted', function (done) {
+    it('emits an error event if the response message cannot be formatted', function (done: Function) {
       server.on('error', () => done())
 
       client.request('circular value')
