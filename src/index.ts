@@ -213,8 +213,8 @@ export class Peer extends EventEmitter {
         }
       },
       end: () => {
-        writable.end()
         clean()
+        writable.end()
       },
     } as {
       [event: string]: any,
@@ -240,6 +240,7 @@ export class Peer extends EventEmitter {
   }
 
   push (data: any) {
+    // TODO: make sure data is a JsonRpcPayload, or convert it to be.
     return data === null
       ? this.emit('end')
       : this.emit('data', data)
@@ -270,6 +271,7 @@ export class Peer extends EventEmitter {
   // }
 
   end(): void {
+    this.emit('end')
     // if (message) {
     //   this.write(message)
     // }

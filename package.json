@@ -21,7 +21,8 @@
     "email": "julien.fontanet@isonoe.net"
   },
   "preferGlobal": false,
-  "main": "dist/",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "bin": {},
   "files": [
     "dist/"
