@@ -239,16 +239,16 @@ export class Peer extends EventEmitter {
     return writable
   }
 
-  push (data: any) {
-    // TODO: make sure data is a JsonRpcPayload, or convert it to be.
-    return data === null
+  push (chunk: any, encoding?: string) {
+    // TODO: does convert the chunk to a JsonRpcPayload is better?
+    return chunk === null
       ? this.emit('end')
-      : this.emit('data', data)
+      : this.emit('data', chunk, encoding)
   }
+  async write (buffer: Buffer | string) {
 
-  async write (message: any) {
     try {
-      const response = await this.exec(String(message))
+      const response = await this.exec(String(buffer))
       if (response !== undefined) {
         this.push(response)
       }
