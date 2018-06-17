@@ -155,6 +155,22 @@ export default class Peer extends EventEmitter {
 
   // minimal stream interface
 
+  end (data, encoding, cb) {
+    if (typeof data === 'function') {
+      process.nextTick(data)
+    } else {
+      if (typeof encoding === 'function') {
+        process.nextTick(encoding)
+      } else if (typeof cb === 'function') {
+        process.nextTick(cb)
+      }
+
+      if (data !== undefined) {
+        this.write(data)
+      }
+    }
+  }
+
   pipe (writable) {
     const listeners = {
       data: data => writable.write(data),
@@ -181,6 +197,12 @@ export default class Peer extends EventEmitter {
   }
 
   write (message) {
+    let cb
+    const n = arguments.length
+    if (n > 1 && typeof (cb = arguments[n - 1]) === 'function') {
+      process.nextTick(cb)
+    }
+
     this.exec(String(message)).then(
       response => {
         if (response !== undefined) {
@@ -191,5 +213,8 @@ export default class Peer extends EventEmitter {
         this.emit('error', error)
       }
     )
+
+    // indicates that other calls to `write` are allowed
+    return true
   }
 }
