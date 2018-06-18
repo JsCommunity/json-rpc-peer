@@ -233,16 +233,27 @@ export class Peer extends EventEmitter {
       ? this.emit('end')
       : this.emit('data', chunk, encoding)
   }
-  async write (buffer: Buffer | string) {
 
-    try {
-      const response = await this.exec(String(buffer))
-      if (response !== undefined) {
-        this.push(response)
-      }
-    } catch (error) {
-      this.emit('error', error)
+  write (message) {
+    let cb
+    const n = arguments.length
+    if (n > 1 && typeof (cb = arguments[n - 1]) === 'function') {
+      process.nextTick(cb)
     }
+
+    this.exec(String(message)).then(
+      response => {
+        if (response !== undefined) {
+          this.push(response)
+        }
+      },
+      error => {
+        this.emit('error', error)
+      }
+    )
+
+    // indicates that other calls to `write` are allowed
+    return true
   }
 
   // write(message: any): boolean {
@@ -258,12 +269,20 @@ export class Peer extends EventEmitter {
   //   return true
   // }
 
-  end(): void {
-    this.emit('end')
-    // if (message) {
-    //   this.write(message)
-    // }
-    // noop. just for pretend I'm a stream...
+  end (data, encoding, cb) {
+    if (typeof data === 'function') {
+      process.nextTick(data)
+    } else {
+      if (typeof encoding === 'function') {
+        process.nextTick(encoding)
+      } else if (typeof cb === 'function') {
+        process.nextTick(cb)
+      }
+
+      if (data !== undefined) {
+        this.write(data)
+      }
+    }
   }
 
   private _getDeferred (id: number | string) {
