@@ -55,6 +55,7 @@ export default class Peer extends EventEmitter {
   constructor (onMessage = defaultOnMessage) {
     super()
 
+    this._asyncEmitError = process.nextTick.bind(process, this.emit.bind(this), 'error')
     this._handle = makeAsync(onMessage)
     this._deferreds = Object.create(null)
   }
@@ -209,9 +210,7 @@ export default class Peer extends EventEmitter {
           this.push(response)
         }
       },
-      error => {
-        this.emit('error', error)
-      }
+      this._asyncEmitError
     )
 
     // indicates that other calls to `write` are allowed
