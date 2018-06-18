@@ -101,10 +101,11 @@ describe('Peer', () => {
     const start = Date.now()
 
     return Promise.all([
-      client.request('wait', [25]),
-      client.request('wait', [25])
+      client.request('wait', [100]),
+      client.request('wait', [100]),
+      client.request('wait', [100])
     ]).then(() => {
-      expect(Date.now() - start).toBeLessThan(40)
+      expect(Date.now() - start).toBeLessThan(200)
     })
   })
 
