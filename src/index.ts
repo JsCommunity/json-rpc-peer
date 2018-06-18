@@ -1,23 +1,17 @@
-import { EventEmitter } from 'events'
-// import {
-//   forEach,
-//   isArray,
-//   map,
-// }                           from 'lodash'
 import cuid from 'cuid'
+import { EventEmitter } from 'events'
 
 import {
   format,
   JsonRpcError,
-  MethodNotFound,
-  parse,
-
-  JsonRpcPayload,
-  JsonRpcPayloadRequest,
-  JsonRpcPayloadError,
-  JsonRpcPayloadResponse,
   JsonRpcParamsSchema,
-}                                 from 'json-rpc-protocol'
+  JsonRpcPayload,
+  JsonRpcPayloadError,
+  JsonRpcPayloadRequest,
+  JsonRpcPayloadResponse,
+  MethodNotFound,
+  parse
+} from 'json-rpc-protocol'
 
 // ===================================================================
 
@@ -26,13 +20,13 @@ export * from 'json-rpc-protocol'
 
 // ===================================================================
 
-function makeAsync (fn: Function): (...args: any[]) => Promise<any> {
+function makeAsync (fn: (...args: any[]) => any): (...args: any[]) => Promise<any> {
   return function (this: any, ...args: any[]) {
-    return new Promise(resolve => resolve(fn.apply(this, args)))
+    return new Promise(((resolve) => resolve(fn.apply(this, args)))
   }
 }
 
-const parseMessage = (message: string | Object) => {
+const parseMessage = (message: string | object) => {
   try {
     return parse(message)
   } catch (error) {
@@ -66,8 +60,8 @@ export class Peer extends EventEmitter {
   private _handle: (payload: JsonRpcPayload, data: any) => Promise<any>
   private _deferreds: {
     [idx: string]: {
-      resolve: Function,
-      reject: Function,
+      resolve: (...args: any[]) => any,
+      reject: (...args: any[]) => any
     }
   }
 
@@ -76,12 +70,6 @@ export class Peer extends EventEmitter {
 
     this._handle = makeAsync(onMessage)
     this._deferreds = Object.create(null)
-  }
-
-  _getDeferred (id: number | string) {
-    const deferred = this._deferreds[id]
-    delete this._deferreds[id]
-    return deferred
   }
 
   async exec (
@@ -277,6 +265,13 @@ export class Peer extends EventEmitter {
     // }
     // noop. just for pretend I'm a stream...
   }
+
+  private _getDeferred (id: number | string) {
+    const deferred = this._deferreds[id]
+    delete this._deferreds[id]
+    return deferred
+  }
+
 }
 
 export default Peer
