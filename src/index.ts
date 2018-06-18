@@ -1,4 +1,3 @@
-import cuid from 'cuid'
 import { EventEmitter } from 'events'
 
 import {
@@ -20,9 +19,15 @@ export * from 'json-rpc-protocol'
 
 // ===================================================================
 
-function makeAsync (fn: (...args: any[]) => any): (...args: any[]) => Promise<any> {
+export type AnyFunction = (...args: any[]) => any
+
+function makeAsync (fn: AnyFunction): AnyFunction {
   return function (this: any, ...args: any[]) {
-    return new Promise(((resolve) => resolve(fn.apply(this, args)))
+    return new Promise(
+      (resolve) => resolve(
+        fn.apply(this, args)
+      )
+    )
   }
 }
 
@@ -51,12 +56,13 @@ function noop () {
 // Starts the autoincrement id with the JavaScript minimal safe integer to have
 // more room before running out of integers (it's very far fetched but a very
 // long running process with a LOT of messages could run out).
-// let nextRequestId = -9007199254740991
-// use cuid() instead
+let nextRequestId = -9007199254740991
 
 // ===================================================================
 
-export class Peer extends EventEmitter {
+export class Peer extends EventEmitter implements NodeJS.WritableStream {
+  public writable = true
+
   private _handle: (payload: JsonRpcPayload, data: any) => Promise<any>
   private _deferreds: {
     [idx: string]: {
@@ -72,9 +78,9 @@ export class Peer extends EventEmitter {
     this._deferreds = Object.create(null)
   }
 
-  async exec (
-    message: string | Object,
-    data?: any,
+  public async exec (
+    message: string | object,
+    data?: any
   ): Promise<undefined | string | JsonRpcPayload | JsonRpcPayload[]> {
     const messagePayload = parseMessage(message)
 
@@ -83,42 +89,42 @@ export class Peer extends EventEmitter {
       const results = (
         await Promise.all(
           messagePayload.map(
-            payload => this.exec(payload, data)
+            (payload) => this.exec(payload, data)
           )
         )
-      ).filter(result => result !== undefined) as JsonRpcPayload[]
+      ).filter((result) => result !== undefined) as JsonRpcPayload[]
 
       return results
     }
 
-    const {type} = messagePayload
+    const { type } = messagePayload
 
     if (type === 'error') {
-      const {id} = messagePayload as JsonRpcPayloadError
+      const { id } = messagePayload as JsonRpcPayloadError
 
       // Some errors do not have an identifier, simply discard them.
       if (id === undefined || id === null) {
-        return
+        return undefined
       }
 
-      const {error} = messagePayload as JsonRpcPayloadError
+      const { error } = messagePayload as JsonRpcPayloadError
       this._getDeferred(id).reject(
         // TODO: it would be great if we could return an error with of
         // a more specific type (and custom types with registration).
         new JsonRpcError(error.message, error.code, error.data)
       )
-      return
+      return undefined
 
     } else if (type === 'response') {
       const responsePayload = messagePayload as JsonRpcPayloadResponse
       this._getDeferred(
         responsePayload.id
       ).resolve(responsePayload.result)
-      return
+      return undefined
 
     } else if (type === 'notification') {
       this._handle(messagePayload, data).catch(noop)
-      return
+      return undefined
 
     } else {  // type === 'request'
       const requestPayload = messagePayload as JsonRpcPayloadRequest
@@ -136,27 +142,15 @@ export class Peer extends EventEmitter {
         )
       }
       return format.response(requestPayload.id, result === undefined ? null : result)
-
-      // return this._handle(messagePayload, data).then(
-      //   (result) => format.response(messagePayload.id, result === undefined ? null : result),
-      //   (error) => format.error(
-      //     messagePayload.id,
-
-      //     // If the method name is not defined, default to the method passed
-      //     // in the request.
-      //     (error instanceof MethodNotFound && !error.data)
-      //       ? new MethodNotFound(messagePayload.method)
-      //       : error
-      //   )
-      // )
     }
   }
 
   // Fails all pending requests.
-  failPendingRequests (reason?: string) {
-    const {_deferreds: deferreds} = this
+  public failPendingRequests (reason?: string) {
+    const { _deferreds: deferreds } = this
 
-    for (const id in deferreds) {
+    // https://stackoverflow.com/a/45959874/1123955
+    for (const id of Object.keys(deferreds)) {
       deferreds[id].reject(reason)
       delete deferreds[id]
     }
@@ -167,11 +161,11 @@ export class Peer extends EventEmitter {
    *
    * TODO: handle multi-requests.
    */
-  request (method: string, params?: JsonRpcParamsSchema): Promise<any> {
+  public request (method: string, params?: JsonRpcParamsSchema): Promise<any> {
     return new Promise((resolve, reject) => {
-      const requestId = cuid()
+      const requestId = nextRequestId++
 
-      this._deferreds[requestId] = {resolve, reject}
+      this._deferreds[requestId] = { resolve, reject }
 
       this.push(format.request(requestId, method, params))
     })
@@ -182,13 +176,13 @@ export class Peer extends EventEmitter {
    *
    * TODO: handle multi-notifications.
    */
-  async notify (method: string, params?: JsonRpcParamsSchema) {
+  public notify (method: string, params?: JsonRpcParamsSchema) {
     this.push(format.notification(method, params))
   }
 
   // minimal stream interface
 
-  pipe<T extends (NodeJS.WritableStream | Peer)>(writable: T): T {
+  public pipe<T extends (NodeJS.WritableStream)> (writable: T): T {
     let clean: () => void
 
     const listeners = {
@@ -203,51 +197,51 @@ export class Peer extends EventEmitter {
       end: () => {
         clean()
         writable.end()
-      },
+      }
     } as {
-      [event: string]: any,
+      [event: string]: any
     }
 
     clean = () => {
       // forEach(listeners, (listener, event) => {
-      for (const event in listeners) {
+      for (const event of Object.keys(listeners)) {
         const listener = listeners[event]
         this.removeListener(event, listener)
       }
     }
 
-    for (const event in listeners) {
+    for (const event of Object.keys(listeners)) {
       const listener = listeners[event]
       this.on(event, listener)
     }
-    // forEach(listeners, (listener, event) => {
-    //   this.on(event, listener)
-    // })
 
     return writable
   }
 
-  push (chunk: any, encoding?: string) {
+  public push (chunk: any, encoding?: string) {
     // TODO: does convert the chunk to a JsonRpcPayload is better?
     return chunk === null
       ? this.emit('end')
       : this.emit('data', chunk, encoding)
   }
 
-  write (message) {
+  public write (buffer: string | Buffer, cb?: AnyFunction): boolean
+  public write (str: string, encoding?: string, cb?: AnyFunction): boolean
+
+  public write (...args: any[]): boolean {
     let cb
-    const n = arguments.length
-    if (n > 1 && typeof (cb = arguments[n - 1]) === 'function') {
+    const n = args.length
+    if (n > 1 && typeof (cb = args[n - 1]) === 'function') {
       process.nextTick(cb)
     }
 
-    this.exec(String(message)).then(
-      response => {
+    this.exec(String(args[0])).then(
+      (response) => {
         if (response !== undefined) {
           this.push(response)
         }
       },
-      error => {
+      (error) => {
         this.emit('error', error)
       }
     )
@@ -256,31 +250,23 @@ export class Peer extends EventEmitter {
     return true
   }
 
-  // write(message: any): boolean {
-  //   this.exec(String(message)).then(
-  //     response => {
-  //       if (response !== undefined) {
-  //         this.push(response)
-  //       }
-  //     },
-  //   ).catch(
-  //     error => this.emit('error', error)
-  //   )
-  //   return true
-  // }
+  public end (cb?: (...args: any[]) => any): void
+  public end (buffer: string | Buffer, cb?: AnyFunction): void
+  public end (str: string, encoding?: string, cb?: AnyFunction): void
 
-  end (data, encoding, cb) {
-    if (typeof data === 'function') {
-      process.nextTick(data)
+  // end (data, encoding, cb) {
+  public end (...args: any[]): void {
+    if (typeof args[0] === 'function') {
+      process.nextTick(args[0])
     } else {
-      if (typeof encoding === 'function') {
-        process.nextTick(encoding)
-      } else if (typeof cb === 'function') {
-        process.nextTick(cb)
+      if (typeof args[1] === 'function') {
+        process.nextTick(args[1])
+      } else if (typeof args[2] === 'function') {
+        process.nextTick(args[2])
       }
 
-      if (data !== undefined) {
-        this.write(data)
+      if (args[0] !== undefined) {
+        this.write(args[0])
       }
     }
   }
