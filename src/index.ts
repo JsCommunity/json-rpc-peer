@@ -63,6 +63,7 @@ let nextRequestId = -9007199254740991
 export class Peer extends EventEmitter implements NodeJS.WritableStream {
   public writable = true
 
+  private _asyncEmitError: (error: Error) => void
   private _handle: (payload: JsonRpcPayload, data: any) => Promise<any>
   private _deferreds: {
     [idx: string]: {
@@ -73,6 +74,8 @@ export class Peer extends EventEmitter implements NodeJS.WritableStream {
 
   constructor (onMessage = defaultOnMessage) {
     super()
+
+    this._asyncEmitError = process.nextTick.bind(process, this.emit.bind(this), 'error')
 
     this._handle = makeAsync(onMessage)
     this._deferreds = Object.create(null)
@@ -241,9 +244,7 @@ export class Peer extends EventEmitter implements NodeJS.WritableStream {
           this.push(response)
         }
       },
-      (error) => {
-        this.emit('error', error)
-      }
+      this._asyncEmitError
     )
 
     // indicates that other calls to `write` are allowed
