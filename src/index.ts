@@ -45,7 +45,7 @@ const parseMessage = (message: string | object) => {
 // - throw MethodNotFound for all requests
 function defaultOnMessage (message: JsonRpcPayload) {
   if (message.type === 'request') {
-    throw new MethodNotFound((message as JsonRpcPayloadRequest).method)
+    throw new MethodNotFound(message.method)
   }
 }
 
@@ -106,7 +106,7 @@ export class Peer extends EventEmitter implements NodeJS.WritableStream {
       const { id } = messagePayload as JsonRpcPayloadError
 
       // Some errors do not have an identifier, simply discard them.
-      if (id === undefined || id === null) {
+      if (id === null) {
         return undefined
       }
 
