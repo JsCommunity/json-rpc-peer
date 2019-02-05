@@ -21,7 +21,8 @@
     "email": "julien.fontanet@isonoe.net"
   },
   "preferGlobal": false,
-  "main": "dist/",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "bin": {},
   "files": [
     "dist/"
@@ -30,40 +31,30 @@
     "node": ">=4"
   },
   "dependencies": {
-    "@babel/runtime": "7.0.0-rc.1",
-    "json-rpc-protocol": "^0.12.0",
-    "lodash": "^4.17.4"
+    "json-rpc-protocol": "^0.12.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-rc.1",
-    "@babel/core": "7.0.0-rc.1",
-    "@babel/plugin-transform-runtime": "7.0.0-rc.1",
-    "@babel/preset-env": "7.0.0-rc.1",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^8.0.3",
-    "babel-jest": "^23.0.1",
-    "babel-plugin-lodash": "^3.3.2",
+    "@types/node": "^10.3.1",
     "cross-env": "^5.1.1",
-    "eslint": "^5.3.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
     "jest": "^23.1.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.10.0",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "^2.9.1"
   },
   "scripts": {
-    "build": "cross-env NODE_ENV=production babel --source-maps --out-dir=dist/ src/",
+    "build": "cross-env NODE_ENV=production tsc",
     "clean": "rimraf dist/",
     "commitmsg": "npm test",
-    "dev": "cross-env NODE_ENV=development babel --watch --source-maps --out-dir=dist/ src/",
+    "dev": "cross-env NODE_ENV=development tsc --watch",
     "dev-test": "jest --bail --watch",
     "prebuild": "yarn run clean",
     "predev": "npm run prebuild",
     "prepublishOnly": "npm run build",
-    "pretest": "eslint --ignore-path .gitignore --fix .",
+    "pretest": "npm run lint:ts",
+    "lint:ts": "tslint --project tsconfig.json && tsc --noEmit",
     "test": "jest"
   },
   "jest": {
@@ -72,6 +63,13 @@
     "roots": [
       "<rootDir>/src"
     ],
-    "testRegex": "\\.spec\\.js$"
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "testRegex": "\\.spec\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   }
 }
