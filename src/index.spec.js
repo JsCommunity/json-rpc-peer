@@ -94,14 +94,6 @@ describe("Peer", () => {
     });
   });
 
-  describe("#write()", function() {
-    it("emits an error event if the response message cannot be formatted", function(done) {
-      server.on("error", () => done());
-
-      client.request("circular value");
-    });
-  });
-
   describe("#exec()", () => {
     it("accepts an extra data parameter", () => {
       const data = {};
@@ -109,6 +101,10 @@ describe("Peer", () => {
       const peer = new Peer(onMessage);
       peer.exec(format.notification("foo"), data);
       expect(onMessage.mock.calls[0][1]).toBe(data);
+    });
+
+    it("emits an error event if the response message cannot be formatted", function() {
+      return expect(client.request("circular value")).rejects.toThrow();
     });
   });
 });
