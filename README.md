@@ -17,16 +17,16 @@ be flexible enough to use in any environments.
 
 ```javascript
 // ES5
-var Peer = require('json-rpc-peer')['default']
+var Peer = require("json-rpc-peer")["default"];
 
 // ES6
-import Peer from 'json-rpc-peer'
+import Peer from "json-rpc-peer";
 ```
 
 ### Construction
 
 ```javascript
-var peer = new Peer(function onMessage (message) {
+var peer = new Peer(function onMessage(message) {
   // Here is the main handler where every incoming
   // notification/request message goes.
   //
@@ -34,7 +34,7 @@ var peer = new Peer(function onMessage (message) {
   // return a value to send the related response.
   //
   // If the response is asynchronous, just return a promise.
-})
+});
 ```
 
 > The `onMessage` parameter is optional, it can be omitted if this
@@ -55,24 +55,27 @@ notifications support) but is often good enough.
 It is often used with non-connected protocols such as HTTP:
 
 ```javascript
-var readAllSteam = require('read-all-stream')
+var readAllSteam = require("read-all-stream");
 
 // For this example we create an HTTP server:
-require('http').createServer({
-  port: 8081
-}, function onRequest (req, res) {
-  // Read the whole request body.
-  readAllStream(req, function (err, data) {
-    // Error handling would be better.
-    if (err) return
+require("http").createServer(
+  {
+    port: 8081,
+  },
+  function onRequest(req, res) {
+    // Read the whole request body.
+    readAllStream(req, function(err, data) {
+      // Error handling would be better.
+      if (err) return;
 
-    // Here `peer` is not used as a stream, it can therefore be used
-    // to handle all the connections.
-    peer.exec(message).then(function (response) {
-      res.end(response)
-    })
-  })
-})
+      // Here `peer` is not used as a stream, it can therefore be used
+      // to handle all the connections.
+      peer.exec(message).then(function(response) {
+        res.end(response);
+      });
+    });
+  }
+);
 ```
 
 If you have a connected transport, such as WebSocket, you may want to
@@ -81,19 +84,22 @@ therefore be connected to other streams via the `pipe()` method:
 
 ```javascript
 // For this example, we create a WebSocket server:
-require('websocket-stream').createServer({
-  port: 8080
-}, function onConnection (stream) {
-  // Because a stream can only be used once, it is necessary to create
-  // a dedicated peer per connection.
-  stream.pipe(new Peer(onMessage)).pipe(stream)
-})
+require("websocket-stream").createServer(
+  {
+    port: 8080,
+  },
+  function onConnection(stream) {
+    // Because a stream can only be used once, it is necessary to create
+    // a dedicated peer per connection.
+    stream.pipe(new Peer(onMessage)).pipe(stream);
+  }
+);
 ```
 
 ### Notification
 
 ```javascript
-peer.notify('foo', ['bar'])
+peer.notify("foo", ["bar"]);
 ```
 
 ### Request
@@ -102,11 +108,14 @@ The `request()` method returns a promise which will be resolved or
 rejected when the response will be received.
 
 ```javascript
-peer.request('add', [1, 2]).then(function (result) {
-  console.log(result)
-}).catch(function (error) {
-  console.error(error.message)
-})
+peer
+  .request("add", [1, 2])
+  .then(function(result) {
+    console.log(result);
+  })
+  .catch(function(error) {
+    console.error(error.message);
+  });
 ```
 
 ### Failure
@@ -116,12 +125,12 @@ answered (e.g. connection lost), it is therefore necessary to fail
 them manually.
 
 ```javascript
-peer.request('add', [1, 2]).catch(function (reason) {
-  console.error(reason)
+peer.request("add", [1, 2]).catch(function(reason) {
+  console.error(reason);
   // → connection lost
-})
+});
 
-peer.failPendingRequests('connection lost');
+peer.failPendingRequests("connection lost");
 ```
 
 ### Low level interface
@@ -130,15 +139,15 @@ peer.failPendingRequests('connection lost');
 
 ```js
 // ES5
-var peer = require('json-rpc-peer')
+var peer = require("json-rpc-peer");
 
-var format = peer.format
-var parse = peer.parse
-var JsonRpcError = peer.JsonRpcError
-var InvalidJson = peer.InvalidJson
-var InvalidRequest = peer.InvalidRequest
-var MethodNotFound = peer.MethodNotFound
-var InvalidParameters = peer.InvalidParameters
+var format = peer.format;
+var parse = peer.parse;
+var JsonRpcError = peer.JsonRpcError;
+var InvalidJson = peer.InvalidJson;
+var InvalidRequest = peer.InvalidRequest;
+var MethodNotFound = peer.MethodNotFound;
+var InvalidParameters = peer.InvalidParameters;
 
 // ES2015 (formerly known as ES6)
 import {
@@ -148,8 +157,8 @@ import {
   InvalidJson,
   InvalidRequest,
   MethodNotFound,
-  InvalidParameters
-} from 'json-rpc-peer'
+  InvalidParameters,
+} from "json-rpc-peer";
 ```
 
 ## Development
@@ -173,7 +182,7 @@ import {
 
 ## Contributions
 
-Contributions are *very* welcomed, either on the documentation or on
+Contributions are _very_ welcomed, either on the documentation or on
 the code.
 
 You may:

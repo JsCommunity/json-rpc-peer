@@ -1,114 +1,114 @@
 /* eslint-env jest */
 
-import { format } from 'json-rpc-protocol'
+import { format } from "json-rpc-protocol";
 
-import Peer, {MethodNotFound} from './'
+import Peer, { MethodNotFound } from "./";
 
 // ===================================================================
 
-describe('Peer', () => {
-  let server, client
-  const messages = []
+describe("Peer", () => {
+  let server, client;
+  const messages = [];
 
   beforeAll(() => {
     server = new Peer(message => {
-      messages.push(message)
+      messages.push(message);
 
-      if (message.type === 'notification') {
-        return
+      if (message.type === "notification") {
+        return;
       }
 
-      const {method} = message
+      const { method } = message;
 
-      if (method === 'circular value') {
-        const a = []
-        a.push(a)
+      if (method === "circular value") {
+        const a = [];
+        a.push(a);
 
-        return a
+        return a;
       }
 
-      if (method === 'identity') {
-        return message.params[0]
+      if (method === "identity") {
+        return message.params[0];
       }
 
-      if (method === 'wait') {
+      if (method === "wait") {
         return new Promise(resolve => {
-          setTimeout(resolve, message.params[0])
-        })
+          setTimeout(resolve, message.params[0]);
+        });
       }
 
-      throw new MethodNotFound()
-    })
+      throw new MethodNotFound();
+    });
 
-    client = new Peer()
+    client = new Peer();
 
-    server.pipe(client).pipe(server)
-  })
+    server.pipe(client).pipe(server);
+  });
 
   afterEach(() => {
-    messages.length = 0
-  })
+    messages.length = 0;
+  });
 
   // =================================================================
 
-  it('#notify()', () => {
-    client.notify('foo')
+  it("#notify()", () => {
+    client.notify("foo");
 
-    expect(messages.length).toBe(1)
-    expect(messages[0].method).toBe('foo')
-    expect(messages[0].type).toBe('notification')
-  })
+    expect(messages.length).toBe(1);
+    expect(messages[0].method).toBe("foo");
+    expect(messages[0].type).toBe("notification");
+  });
 
-  it('#request()', () => {
-    const result = client.request('identity', [42])
+  it("#request()", () => {
+    const result = client.request("identity", [42]);
 
-    expect(messages.length).toBe(1)
-    expect(messages[0].method).toBe('identity')
-    expect(messages[0].type).toBe('request')
+    expect(messages.length).toBe(1);
+    expect(messages[0].method).toBe("identity");
+    expect(messages[0].type).toBe("request");
 
     return result.then(result => {
-      expect(result).toBe(42)
-    })
-  })
+      expect(result).toBe(42);
+    });
+  });
 
-  it('#request() injects method name when MethodNotFound', () => {
-    return client.request('foo').then(
+  it("#request() injects method name when MethodNotFound", () => {
+    return client.request("foo").then(
       () => {
-        expect('should have been rejected').toBeFalsy()
+        expect("should have been rejected").toBeFalsy();
       },
       error => {
-        expect(error.code).toBe(-32601)
-        expect(error.data).toBe('foo')
+        expect(error.code).toBe(-32601);
+        expect(error.data).toBe("foo");
       }
-    )
-  })
+    );
+  });
 
-  it('#request() in parallel', function () {
-    const start = Date.now()
+  it("#request() in parallel", function() {
+    const start = Date.now();
 
     return Promise.all([
-      client.request('wait', [25]),
-      client.request('wait', [25]),
+      client.request("wait", [25]),
+      client.request("wait", [25]),
     ]).then(() => {
-      expect(Date.now() - start).toBeLessThan(40)
-    })
-  })
+      expect(Date.now() - start).toBeLessThan(40);
+    });
+  });
 
-  describe('#write()', function () {
-    it('emits an error event if the response message cannot be formatted', function (done) {
-      server.on('error', () => done())
+  describe("#write()", function() {
+    it("emits an error event if the response message cannot be formatted", function(done) {
+      server.on("error", () => done());
 
-      client.request('circular value')
-    })
-  })
+      client.request("circular value");
+    });
+  });
 
-  describe('#exec()', () => {
-    it('accepts an extra data parameter', () => {
-      const data = {}
-      const onMessage = jest.fn()
-      const peer = new Peer(onMessage)
-      peer.exec(format.notification('foo'), data)
-      expect(onMessage.mock.calls[0][1]).toBe(data)
-    })
-  })
-})
+  describe("#exec()", () => {
+    it("accepts an extra data parameter", () => {
+      const data = {};
+      const onMessage = jest.fn();
+      const peer = new Peer(onMessage);
+      peer.exec(format.notification("foo"), data);
+      expect(onMessage.mock.calls[0][1]).toBe(data);
+    });
+  });
+});
