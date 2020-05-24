@@ -70,7 +70,7 @@ require("http").createServer(
 
       // Here `peer` is not used as a stream, it can therefore be used
       // to handle all the connections.
-      peer.exec(message).then(function(response) {
+      peer.exec(data).then(function(response) {
         res.end(response);
       });
     });
