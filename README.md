@@ -64,13 +64,13 @@ require("http").createServer(
   },
   function onRequest(req, res) {
     // Read the whole request body.
-    readAllStream(req, function(err, data) {
+    readAllStream(req, function(err, message) {
       // Error handling would be better.
       if (err) return;
 
       // Here `peer` is not used as a stream, it can therefore be used
       // to handle all the connections.
-      peer.exec(data).then(function(response) {
+      peer.exec(message).then(function(response) {
         res.end(response);
       });
     });
