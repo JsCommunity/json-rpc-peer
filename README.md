@@ -64,7 +64,7 @@ require("http").createServer(
   },
   function onRequest(req, res) {
     // Read the whole request body.
-    readAllStream(req, function(err, data) {
+    readAllStream(req, function(err, message) {
       // Error handling would be better.
       if (err) return;
 
