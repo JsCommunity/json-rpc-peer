@@ -42,7 +42,7 @@ let nextRequestId = -9007199254740991;
 
 // ===================================================================
 
-export class Peer extends EventEmitter {
+export default class Peer extends EventEmitter {
   constructor(onMessage = defaultOnMessage) {
     super();
 
@@ -214,4 +214,4 @@ export class Peer extends EventEmitter {
   }
 }
 
-export default Peer
+export { Peer }
