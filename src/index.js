@@ -214,4 +214,4 @@ export class Peer extends EventEmitter {
   }
 }
 
-export { Peer }
+export default Peer
