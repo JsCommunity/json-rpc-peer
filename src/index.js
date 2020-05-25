@@ -213,3 +213,5 @@ export default class Peer extends EventEmitter {
     return true;
   }
 }
+
+export { Peer }
