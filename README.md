@@ -55,7 +55,7 @@ notifications support) but is often good enough.
 It is often used with non-connected protocols such as HTTP:
 
 ```javascript
-var readAllSteam = require("read-all-stream");
+var readAllStream = require("read-all-stream");
 
 // For this example we create an HTTP server:
 require("http").createServer(
