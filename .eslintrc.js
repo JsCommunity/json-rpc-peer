@@ -27,4 +27,7 @@ module.exports = {
     // uncomment if you are using a builder like Babel
     "node/no-unsupported-features/es-syntax": "off",
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
 };
