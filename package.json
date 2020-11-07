@@ -25,7 +25,8 @@
   "typings": "index.d.ts",
   "bin": {},
   "files": [
-    "dist/"
+    "dist/",
+    "index.d.ts"
   ],
   "engines": {
     "node": ">=4"
