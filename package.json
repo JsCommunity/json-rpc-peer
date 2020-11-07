@@ -1,6 +1,6 @@
 {
   "name": "json-rpc-peer",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "license": "ISC",
   "description": "JSON-RPC 2 transport-agnostic library",
   "keywords": [
@@ -21,7 +21,8 @@
     "email": "julien.fontanet@isonoe.net"
   },
   "preferGlobal": false,
-  "main": "dist/",
+  "main": "dist/index.js",
+  "typings": "index.d.ts",
   "bin": {},
   "files": [
     "dist/"
@@ -55,7 +56,7 @@
     "jest": "^24.3.1",
     "lint-staged": "^8.1.5",
     "prettier": "^1.16.4",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.7.1"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production babel --source-maps --out-dir=dist/ src/",
