@@ -88,5 +88,9 @@
       "eslint --ignore-pattern '!*'",
       "jest --findRelatedTests --passWithNoTests"
     ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   }
 }
