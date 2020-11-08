@@ -20,6 +20,12 @@
     "name": "Julien Fontanet",
     "email": "julien.fontanet@isonoe.net"
   },
+  "contributors": [
+    {
+      "name": "Huan LI (李卓桓)",
+      "url" :"https://github.com/huan"
+    }
+  ],
   "preferGlobal": false,
   "main": "dist/index.js",
   "typings": "index.d.ts",
